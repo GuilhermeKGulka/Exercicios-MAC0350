@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="jupiter-ueb.css">
+    <script src="jupiter-ueb.js"></script>
+</head>
+<body>
+    <header>
+        <div>
+            <img src="https://uspdigital.usp.br/comumwebdev/imagens/cabecalho/usp-logo.png">
+        </div>
+        <div>
+            <img src="https://uspdigital.usp.br/comumwebdev/imagens/cabecalho/usp-logo-texto.png">
+        </div>
+    </header>
+
+    <div class="barra-grid">
+        <div id="cor1"></div>
+        <div id="cor2"> </div>
+        <div id="cor3"> </div>
+    </div>
+
+    <div class="container">
+        <div class="secao-esquerda">            
+            <div class="menu-lateral">
+                <h3>Público</h3>
+                <ul>
+                    <li class="menu-item">
+                        <button class="menu-botao">Calendário Escolar</button>
+                    </li>
+                    <li class="menu-item">
+                        <button class="menu-botao">Cursos de ingresso</button>
+                        <div class="submenu">
+                            <button>Graduação</button>
+                            <button>Pós-graduação</button>
+                        </div>
+                    </li>
+                    <li class="menu-item">
+                        <button class="menu-botao">Disciplina</button>
+                        <div class="submenu">
+                            <button>Obrigatórias</button>
+                            <button>Optativas</button>
+                        </div>
+                    </li>
+                    <li class="menu-item">
+                        <button class="menu-botao">Editais</button>
+                        <div class="submenu">
+                            <button>2026</button>
+                            <button>2025</button>
+                            <button>Arquivo</button>
+                        </div>
+                    </li>
+                    <li class="menu-item">
+                        <button class="menu-botao">FAQ</button>
+                        <div class="submenu">
+                            <button>Matrícula</button>
+                            <button>Biblioteca</button>
+                            <button>Secretaria</button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="secao-direita">
+            <div class="login-container">
+                <h2>Login</h2>
+                    
+                <form id="loginForm">
+                    <div class="input-group">
+                        <label for="usuario">Usuário:</label>
+                        <input type="text" id="usuario" name="usuario" required>
+                    </div>
+                        
+                    <div class="input-group">
+                        <label for="senha">Senha:</label>
+                        <input type="password" id="senha" name="senha" required>
+                    </div>
+                        
+                    <button type="submit" class="btn-login">Entrar</button>
+                </form>
+            </div>
+            <div class="rodape">Rodapé</div>
+        </div>
+    </div>
+
+    <button class="botao-expandir">☰</button>
+</body>
+</html>

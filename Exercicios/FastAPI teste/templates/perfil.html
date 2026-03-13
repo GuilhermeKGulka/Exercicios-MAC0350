@@ -1,0 +1,9 @@
+{% if user %}
+    <h1>Painel de {{ user.nome }}</h1>
+    <img src="static/dog.jpg">
+    {% if user.admin %}
+        <span style="color: red;">Acesso Administrativo Ativo</span>
+    {% endif %}
+{% else %}
+    <p>Por favor, faça login para acessar seu perfil.</p>
+{% endif %}

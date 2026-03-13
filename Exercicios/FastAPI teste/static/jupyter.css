@@ -1,0 +1,46 @@
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#cabecalho {
+
+    display: flex;
+    gap: 5vw;
+    margin-top: 2vh;
+}
+
+.barra-grid {
+    
+    display: flex;
+    flex-direction: column;
+}
+
+.cor1 {
+
+    background: #fcb421;
+    height: 1vh;
+    width: 100%;
+}
+
+.cor2 {
+
+    background: #63c5d2;
+    height: 2vh;
+    width: 100%;
+}
+
+.cor3 {
+
+    background: #1094ab;
+    height: 4vh;
+    width: 100%;
+}
+
+.flex-rows {
+    
+    display: flex;
+    flex-direction: column;
+    gap: 5vh;
+}

@@ -1,0 +1,1 @@
+Nesse projeto criaremos um site com uma database de animais brasileiros, com funcionalidade de login e features basicas.
