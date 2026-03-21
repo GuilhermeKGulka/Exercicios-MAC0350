@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../static/Layout.css">
+    <script src="../static/Layout.js"></script>
+</head>
+<body>
+    <header>
+        <h1 class="logo">
+            <span>ANIMAIS</span>
+            <span>DO BRASIL</span>
+        </h1>
+        <div class="losango"></div>
+        <div class="circulo"></div>
+        <div class="divisoria"></div>
+    </header>
+
+    <div class="container">
+        <div class="secao-esquerda">            
+            <div class="menu-lateral">
+                <h3>Seja Bem-vindo!!</h3>
+                <ul>
+                    <li class="menu-item">
+                        <button class="menu-botao">Estou com sorte</button>
+                    </li>
+                    <li class="menu-item">
+                        <button class="menu-botao">Pesquisar animal</button>
+                    </li>
+                    <li class="menu-item">
+                        <button class="menu-botao">Quiz: Você conhece este animal?</button>
+                        <div class="submenu">
+                            <button>Fotos</button>
+                            <button>Nome Científico</button>
+                        </div>
+                    </li>
+
+                    <li class="menu-item">
+                        <button class="menu-botao">Usuários</button>
+                        <div class="submenu">
+                            <button>Lista de usuários</button>
+                            <button>Pesquisa por nome</button>
+                            <button>Pesquisa por usuário</button>
+                        </div>
+                    </li>
+                    <li class="menu-item">
+                        <button class="menu-botao">FAQ</button>
+                        <div class="submenu">
+                            <button>Features</button>
+                            <button>Criação de conta</button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="secao-direita">
+
+            {% block conteudo %}{% endblock %}
+            
+        </div>
+    </div>
+    <div class="rodape">Projeto educacional - Dados do SiBBr</div>
+    <button class="botao-expandir">☰</button>
+</body>
+</html>

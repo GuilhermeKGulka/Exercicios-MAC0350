@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../static/Home.css">
+    <script src="../static/Home.js"></script>
+</head>
+
+{% extends "Layout.html" %}
+
+{% block conteudo %}
+
+{% if not username %}
+
+<div class="login-container">
+    <h2>Login</h2>
+        
+    <form id="loginForm">
+        <div class="input-group">
+            <label for="usuario">Usuário:</label>
+            <input type="text" id="usuario" name="usuario" required>
+        </div>
+            
+        <div class="input-group">
+            <label for="senha">Senha:</label>
+            <input type="password" id="senha" name="senha" required>
+        </div>
+            
+        <button type="button" class="btn-login" onclick="login()">Entrar</button>
+
+    </form>
+<a href="register">Criar uma conta</a>
+</div>
+
+{% else %}
+
+<h1> {{ username }} aaabaaaa</h1>
+
+{% endif %}
+
+{% endblock %}
+
+</html>

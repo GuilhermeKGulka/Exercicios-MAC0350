@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../static/Register.css">
+    <script src="../static/Register.js"></script>
+</head>
+
+{% extends "Layout.html" %}
+
+{% block conteudo %}
+
+<div class="register-container">
+    <h2>Cadastro</h2>
+        
+    <form id="registerForm">
+        <div class="input-group">
+            <label for="usuario">Usuário:</label>
+            <input type="text" id="usuario" name="usuario" required>
+        </div>
+            
+        <div class="input-group">
+            <label for="senha">Senha:</label>
+            <input type="password" id="senha" name="senha" required>
+        </div>
+
+        <div class="input-group">
+            <label for="check-senha">Insira novamente sua senha:</label>
+            <input type="password" id="check-senha" name="check-senha" required>
+        </div>
+            
+        <button type="button" class="btn-register" onclick="enviarCadastro()">Cadastrar-se</button>
+    </form>
+<a href="/">Já tenho uma conta</a>
+</div>
+
+{% endblock %}
+</html>
