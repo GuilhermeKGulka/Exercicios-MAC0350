@@ -101,3 +101,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+async function logout() {
+    const resposta = await fetch('/logout', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (resposta.redirected) {
+        window.location.href = resposta.url;
+    } else {
+        alert("Erro ao realizar logout!");
+    }
+}

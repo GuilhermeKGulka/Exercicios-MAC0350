@@ -12,7 +12,9 @@ async function login() {
         body: JSON.stringify(dados)
     });
 
-    if (resposta.ok) {
+    if (resposta.redirected) {
+        window.location.href = resposta.url;
+    } else if (resposta.ok) {
         const resultado = await resposta.json();
         alert("Login bem sucedido!");
     } else {

@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="../static/Layout.css">
-    <script src="../static/Layout.js"></script>
+    <link rel="stylesheet" href="/static/Layout.css">
+    <script src="/static/Layout.js"></script>
+    <link rel="icon" type="ico" href="/static/favicon.ico">
 </head>
 <body>
     <header>
@@ -52,6 +53,17 @@
                             <button>Criação de conta</button>
                         </div>
                     </li>
+
+                    {% if username %}
+
+                    <li class="menu-item">
+                        <button class="menu-botao">Meu Perfil</button>
+                    </li>
+                    <li class="menu-item">
+                        <button type="button" class="menu-botao" onclick="logout()">Logout</button>
+                    </li>
+
+                    {% endif %}
                 </ul>
             </div>
         </div>

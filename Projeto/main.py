@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request, Depends, HTTPException, status, Cookie, Response
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import RedirectResponse
 from pydantic import BaseModel
 from typing import Annotated
 import time, datetime, logging
@@ -31,23 +32,26 @@ usuarios_db = [
     {"username": "maiia", "password" : "1"},
 ]
 
-'''@app.middleware("http")
-async def add_process_time_header(request: Request, call_next):
-    # 1. Código executado ANTES da rota
-    start_time = time.perf_counter()
+# ~~~~~~~~~~~~~~~~~~~~~ DEPENDENCIAS ~~~~~~~~~~~~~~~~~~~~~
+
+async def get_current_user(request: Request) -> Optional[str]:
+    username = request.cookies.get("session_username")
+    logger.debug(f"Cookie session_username: {username}")
+    return request.cookies.get("session_username")
+
+async def require_logged_out(request: Request):
+    username = await get_current_user(request)
     
-    # 2. A requisição viaja até a rota e volta como resposta
-    response = await call_next(request)
+    if username:
+        logger.info(f"Usuário {username} tentou acessar rota protegida - REDIRECIONANDO")
+        raise HTTPException(
+            status_code=status.HTTP_303_SEE_OTHER,
+            headers={"Location": "/"}
+        )
     
-    # 3. Código executado DEPOIS da rota
-    process_time = time.perf_counter() - start_time
-    
-    # Adicionamos um header customizado na resposta para o cliente ver
-    response.headers["X-Process-Time"] = str(process_time)
-    
-    logger.info(f"Rota: {request.url.path} | Tempo: {process_time:.4f}s")
-    
-    return response'''
+    return None
+
+# ~~~~~~~~~~~~~~~~~~~~~~~ ROTAS ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 @app.get("/")
 def pagina_inicial(request: Request):
@@ -56,9 +60,9 @@ def pagina_inicial(request: Request):
     )
 
 @app.get("/register")
-def pagina_cadastro(request: Request):
+def pagina_cadastro(request: Request, _: None = Depends(require_logged_out)):
     return templates.TemplateResponse(
-        request=request, name="Register.html"
+        request=request, name="Register.html", context={"username": request.cookies.get("session_username")}
     )
 
 @app.post("/createuser")
@@ -70,8 +74,6 @@ def criar_usuario(usuario: User):
 
 @app.post("/login")
 async def login(loginRequest: LoginRequest, response: Response):
-    print("logando")
-
     usuario_encontrado = None
     for u in usuarios_db:
         if u["username"] == loginRequest.username:
@@ -90,5 +92,18 @@ async def login(loginRequest: LoginRequest, response: Response):
             detail="Senha incorreta"
         )
     
-    response.set_cookie(key="session_username", value=loginRequest.username)
-    return {"message": "Logado com sucesso"}
+    response = RedirectResponse(url="/", status_code=303)
+
+    response.set_cookie(
+        key="session_username", 
+        value=loginRequest.username
+    )
+
+    return response
+
+@app.post("/logout")
+async def logout(response: Response):
+    response = RedirectResponse(url="/", status_code=303)
+    response.delete_cookie("session_username")
+
+    return response
