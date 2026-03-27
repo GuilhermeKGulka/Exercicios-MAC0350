@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/static/Animais_lista.css">
+    <script src="/static/Animais_lista.js"></script>
+</head>
+
+{% extends "Layout.html" %}
+
+{% block conteudo %}
+
+<ul>
+{% for animal in animais %}
+    <li>
+        <h1>{{ animal.nome_cientifico }}</h1>
+        <p>{{ animal.nome_popular }}</p>
+        <p>{{ animal.familia }}</p>
+        <p>{{ animal.genero }}</p>
+    </li>
+{% else %}
+    <li>Nenhum animal disponivel ainda :(</li>
+{% endfor %}
+</ul>
+
+{% endblock %}

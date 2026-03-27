@@ -14,10 +14,8 @@ async function login() {
 
     if (resposta.redirected) {
         window.location.href = resposta.url;
-    } else if (resposta.ok) {
-        const resultado = await resposta.json();
-        alert("Login bem sucedido!");
     } else {
-        alert("Erro ao logar!");
+        const resultado = await resposta.json();
+        alert(resultado.error);
     }
 }

@@ -2,6 +2,11 @@ async function enviarCadastro() {
     const senha = document.getElementById('senha').value;
     const checkSenha = document.getElementById('check-senha').value;
 
+    if (senha === "") {
+        alert("A senha não pode ser vazia!");
+        return;
+    }
+
     if (senha !== checkSenha) {
         alert("As senhas não coincidem!");
         return;
@@ -9,7 +14,7 @@ async function enviarCadastro() {
 
     const dados = { 
         username: document.getElementById('usuario').value,
-        name: null,
+        name: document.getElementById('usuario').value,
         password: senha
     };
 
@@ -21,10 +26,10 @@ async function enviarCadastro() {
         body: JSON.stringify(dados)
     });
 
-    if (resposta.ok) {
-        const resultado = await resposta.json();
-        alert("Usuário " + dados.username + " criado!");
+    if (resposta.redirected) {
+        window.location.href = resposta.url;
     } else {
-        alert("Erro ao enviar!");
+        const resultado = await resposta.json();
+        alert(resultado.error);
     }
 }
