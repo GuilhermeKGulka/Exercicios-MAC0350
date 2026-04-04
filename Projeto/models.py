@@ -1,6 +1,5 @@
 from typing import Annotated, List, Optional
 from sqlmodel import Field, Relationship, SQLModel, create_engine, Session
-from passlib.context import CryptContext
 from pathlib import Path
 import logging
 
@@ -32,10 +31,6 @@ def get_session():
     with Session(engine) as session:
         yield session
 
-# ========== CONFIGURAÇÃO DE HASH ==========
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
 # ========== MODELOS ==========
 
 class UsuarioBase(SQLModel, table=False):
@@ -45,15 +40,15 @@ class UsuarioBase(SQLModel, table=False):
 
 class AnimalBase(SQLModel, table=False):
     """Modelo base de animal"""
-    nome_cientifico: str = Field(index=True, unique=True)
-    nome_popular: Optional[str] = Field(default=None, index=True)
-    reino: Optional[str] = Field(default=None)
-    filo: Optional[str] = Field(default=None)
-    classe: Optional[str] = Field(default=None)
-    ordem: Optional[str] = Field(default=None)
+    nome_cientifico: str = Field(unique=True)
+    nome_popular: Optional[str] = Field(default=None)
+    reino: Optional[str] = Field(default=None, index=True)
+    filo: Optional[str] = Field(default=None, index=True)
+    classe: Optional[str] = Field(default=None, index=True)
+    ordem: Optional[str] = Field(default=None, index=True)
     familia: Optional[str] = Field(default=None, index=True)
-    genero: Optional[str] = Field(default=None)
-    especie: Optional[str] = Field(default=None)
+    genero: Optional[str] = Field(default=None, index=True)
+    epitetoEspecifico: Optional[str] = Field(default=None)
 
 class Favorito(SQLModel, table=True):
     """Tabela de favoritos"""
@@ -74,8 +69,8 @@ class Usuario(UsuarioBase, table=True):
     
     id: Optional[int] = Field(default=None, primary_key=True)
     password: str
+    profile_img_url: Optional[str] = Field(default=None)
     
-    # Relacionamento - string com o nome da classe para evitar circular import
     animais_favoritos: List["Animal"] = Relationship(
         back_populates="favoritado_por_usuarios",
         link_model=Favorito
@@ -85,8 +80,11 @@ class Animal(AnimalBase, table=True):
     __tablename__ = "animal"
     
     id: Optional[int] = Field(default=None, primary_key=True)
+
+    gbif_id: Optional[int] = Field(default=None)
+    img_url: Optional[str] = Field(default=None)
+    img_author: Optional[str] = Field(default=None)
     
-    # Relacionamento
     favoritado_por_usuarios: List["Usuario"] = Relationship(
         back_populates="animais_favoritos",
         link_model=Favorito

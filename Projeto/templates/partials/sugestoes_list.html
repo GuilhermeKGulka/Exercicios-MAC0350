@@ -1,0 +1,26 @@
+{% if sugestoes %}
+    {% for sugestao in sugestoes %}
+    <div class="sugestao-item" onclick="completarFiltro('{{ sugestao }}')">
+        <strong>{{ sugestao }}</strong>
+    </div>
+    {% endfor %}
+{% endif %}
+
+<script>
+    function completarFiltro(texto) {
+        const input = document.getElementById('campo-busca');
+        let palavras = input.value.split(" ");
+        palavras.pop(); // Remove o que o usuário estava digitando parcialmente
+        palavras.push(texto);
+        input.value = palavras.join(" ");
+        document.getElementById('lista-sugestoes').innerHTML = ""; // Limpa sugestões
+        input.focus();
+    }
+</script>
+
+<style>
+    .sugestao-item strong {
+        font-family: var(--font-family1);
+        font-size: 0.8em;
+    }
+</style>

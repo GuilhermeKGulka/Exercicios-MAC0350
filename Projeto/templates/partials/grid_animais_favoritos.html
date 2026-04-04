@@ -1,0 +1,95 @@
+{% for animal in favoritos %}
+    {% if loop.last %}
+        <div class="grid-item" 
+             hx-get="/api/usuarios/{{ id }}/favoritos?page={{ page + 1 }}&q={{ q }}" 
+             hx-trigger="intersect once" 
+             hx-swap="afterend"
+             hx-target="this"
+             hx-push-url="true"> 
+    {% else %}
+        <div class="grid-item">
+    {% endif %}
+            <div class="img-container"
+                 hx-get="/api/animal/{{ animal.id }}/img"
+                 hx-target="this"
+                 hx-push-url="false"
+                 hx-trigger="load">
+            </div>
+
+            <div class="grid-info">
+                <h4>{{ animal.nome_cientifico }}</h4>
+                <p><strong>{{ animal.nome_popular or '' }}</strong></p>
+                <div class="taxonomia-info">
+                    <span>Filo: {{ animal.filo or 'N/I' }}<br></span>
+                    <span>Ordem: {{ animal.ordem or 'N/I' }}</span>
+                </div>
+            </div>
+        </div>
+    
+{% endfor %}
+
+<style>
+    .grid-item {
+        background: var(--cor5); 
+        border-radius: 8px; 
+        overflow: hidden;
+        display: flex; 
+        flex-direction: column;
+        padding: 15px;
+        max-height: 600px;
+        width: 200px; 
+        text-align: center;
+    }
+
+    #img-animal {
+        width: 100%;
+        max-height: 35vh; 
+        object-fit: contain; 
+        border-radius: 8px;
+        margin: 0;
+        display: block;
+    }
+
+    .grid-info h4 { 
+        margin: 0 0 5px 0;
+        font-size: 16px;
+        font-style: italic;
+        font-family: var(--font-family2);
+    }
+
+    .grid-info p {
+        margin: 0;
+        font-size: 14px;
+        color: #555;
+        font-family: var(--font-family2);
+    }
+
+    .taxonomia-info span {
+        display: flex;
+        margin: 0;
+        overflow-wrap: normal;
+        font-size: 80%;
+        font-family: var(--font-family1);
+    }
+    
+    @media (max-width: 768px) {
+        .grid-item { 
+            width: 90px;
+            padding: 10px;
+        }
+        
+        .grid-info h4 {
+            font-size: 12px;
+        }
+
+        .grid-info p {
+            font-size: 10px;
+        }
+
+        .taxonomia-info span {
+            font-size: 50%;
+            margin:0;
+            gap:0;
+        }
+    }
+</style>

@@ -1,0 +1,99 @@
+<div class="search-box-wrapper" style="position: relative; margin-bottom: 30px;">
+    <div style="display: flex; gap: 10px;">
+        <input type="text"
+               name="q" 
+               placeholder="Ex: filo:Chordata -genero:Panthera" 
+               class="input-busca"
+               id="campo-busca"
+               hx-get="/api/sugestoes" 
+               hx-target="#lista-sugestoes" 
+               hx-trigger="keyup changed delay:100ms"
+               hx-push-url="false">
+        
+        <button class="btn-search" 
+                hx-get="/api/animais" 
+                hx-target="#grid-animais"
+                hx-include="#campo-busca"
+                hx-indicator="#loading-spinner"
+                hx-push-url="false">
+            <strong>Pesquisar</strong>
+        </button>
+    </div>
+
+    <div id="lista-sugestoes" class="sugestoes-dropdown"></div>
+</div>
+
+<div class="animal-grid" 
+    id="grid-animais" 
+    hx-get="/api/animais" 
+    hx-trigger="load"
+    hx-target="this"
+    hx-push-url="false">
+    <p>Carregando catálogo...</p>
+</div>
+
+<style>
+    .input-busca {
+        font-family: var(--font-family1);
+        flex-grow: 1; 
+        padding: 12px; 
+        border-radius: 8px; 
+        border: 3px solid var(--cor5);
+        outline: none;
+    }
+
+    .btn-search {
+        font-family: var(--font-family1);
+        color: var(--cor5-1);
+        width: auto; 
+        padding: 0 25px;
+        border: 3px solid var(--cor1-1);
+        border-radius: 8px;
+        background: var(--cor1);
+        outline: none;
+    }
+
+    .btn-search:hover {
+        color: var(--cor5);
+        background: var(--cor1-1);
+    }
+
+    .animal-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 20px; width: 100%;
+    }
+
+    .sugestoes-dropdown {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: var(--cor5-1);
+        width: calc(40%); /* Ajustado para o botão */
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        z-index: 100;
+        border-radius: 8px;
+    }
+    .sugestao-item {
+        padding: 10px;
+        cursor: pointer;
+    }
+
+    .sugestao-item:hover { 
+        background: var(--cor5-1); 
+    }
+
+    @media (max-width: 768px) {
+        .input-busca {
+            font-size: 12px
+        }
+
+        .btn-search {
+            font-size: 12px
+        }
+        
+        .animal-grid {
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        }
+    }
+</style>

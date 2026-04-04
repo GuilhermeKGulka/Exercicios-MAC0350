@@ -1,0 +1,68 @@
+{% if animal %}
+    <div class="pagina-animal">
+        <div class="img-container"
+                hx-get="/api/animal/{{ animal.id }}/img"
+                hx-target="this"
+                hx-push-url="false"
+                hx-trigger="load">
+        </div>
+
+        <div class="animal-info">
+            <h2 style="font-style: italic; color: var(--cor3);"> {{ animal.nome_cientifico }}</h2>
+            {% if animal.nome_popular %}<h3> {{ animal.nome_popular }}</h3>{% endif %}
+            
+            <div class="taxonomia-info">
+                <span>Filo: {{ animal.filo or 'N/I' }}<br></span>
+                <span>Classe: {{ animal.classe or 'N/I' }}<br></span>
+                <span>Ordem: {{ animal.ordem or 'N/I' }}<br></span>
+                <span>Familia: {{ animal.familia or 'N/I' }}<br></span>
+            </div>
+        </div>
+    </div>
+{% else %}
+    <p>Animal nao existe :(</p>
+{% endif %}
+
+<style>
+    .pagina-animal {
+        margin: 20px;
+        gap: 30px;
+        display: flex; 
+        flex-direction: row; 
+        align-items: flex-start; 
+        justify-content: flex-start;
+        height: 100%;
+    }
+    
+    #img-animal {
+        height: 75%;
+        max-width: 25vw; 
+        object-fit: contain; 
+        border-radius: 8px;
+        margin: 10px 0;
+        display: block;
+    }  
+    
+    .creditos {
+        font-size: 14px ;
+        color: var(--cor4);
+    }
+
+    .animal-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .animal-info h2, .animal-info h3{
+        margin: 5px 0;
+        font-family: var(--font-family2);
+    }    
+    
+    .taxonomia-info span {
+        margin: 0;
+        overflow-wrap: normal;
+        font-size: 100%;
+        font-family: var(--font-family1);
+    }
+
+</style>

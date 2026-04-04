@@ -1,0 +1,59 @@
+<img type="button" 
+     id="img-animal"
+     src="{{ img_url or '/static/default_animal_img.jpg' }}"
+     hx-get="/animal/{{ id }}"
+     hx-target="main"
+     hx-swap="innerHTML"
+     hx-push-url="true">
+
+<div class="heart-container" 
+     type="button"
+     hx-target="this"
+     hx-swap="innerHTML"
+     hx-put="/api/favoritar/{{ id }}"
+     title="Favoritar">
+        <div class="heart {{ 'active' if favoritado else '' }}"></div>
+</div>
+
+<p class="creditos">Fonte: {% if img_url %}{{ img_author }}{% else %}vecteezy.com/members/allfridaystudio{% endif %}</p>
+
+<style>
+    .creditos {
+        font-size: 0.5em;
+        color: var(--cor4);
+    }
+
+    #img-animal {
+        cursor: pointer;
+    }
+
+    .heart {
+        cursor: pointer;
+        filter: drop-shadow(0 0 px var(--cor4));
+        margin-top: 10px;
+        width: 15px;
+        bottom: 60px;
+        aspect-ratio: 1;
+        background: var(--cor4-1);
+        clip-path: 
+            shape(
+            from 50% 91%,
+            line to 90% 50%,
+            arc to 50% 9%  of 1%,
+            arc to 10% 50% of 1%
+            );
+    }
+
+    .heart.active {
+        background-color: var(--cor6);
+        transform: scale(1.1);
+    }
+
+    .img-container{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+</style>

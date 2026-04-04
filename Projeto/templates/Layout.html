@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/static/Layout.css">
     <script src="/static/Layout.js"></script>
     <link rel="icon" type="ico" href="/static/favicon.ico">
-    <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.js" integrity="sha384-ezjq8118wdwdRMj+nX4bevEi+cDLTbhLAeFF688VK8tPDGeLUe0WoY2MZtSla72F" crossorigin="anonymous"></script> 
 </head>
 <body>
     <header>
@@ -20,62 +20,95 @@
         <div class="divisoria"></div>
     </header>
 
+    <div class="alert-simples hidden" id="alerta-temp"></div>
+
     <div class="container">
         <div class="secao-esquerda">            
             <div class="menu-lateral">
                 <h3>Seja Bem-vindo!!</h3>
                 <ul>
                     <li class="menu-item">
-                        <button class="menu-botao">Estou com sorte</button>
-                    </li>
-                    <li class="menu-item">
-                        <button class="menu-botao">Pesquisar animal</button>
-                    </li>
-                    <li class="menu-item">
-                        <button class="menu-botao">Quiz: Você conhece este animal?</button>
-                        <div class="submenu">
-                            <button>Fotos</button>
-                            <button>Nome Científico</button>
-                        </div>
+                        <button class="menu-botao" hx-get="/home" hx-target="main" hx-push-url="true">Home</button>
                     </li>
 
+                    <li class="menu-item">
+                        <button class="menu-botao"
+                                hx-get="/animal/0" 
+                                hx-target="main" 
+                                hx-push-url="true">
+                            Estou com sorte
+                        </button>
+                    </li>
+
+                    <li class="menu-item">
+                        <button class="menu-botao" 
+                                hx-get="/animais" 
+                                hx-target="main" 
+                                hx-push-url="true">
+                            Explorar Animais
+                        </button>
+                    </li>
+                    
                     <li class="menu-item">
                         <button class="menu-botao">Usuários</button>
                         <div class="submenu">
-                            <button>Lista de usuários</button>
-                            <button>Pesquisa por nome</button>
-                            <button>Pesquisa por usuário</button>
-                        </div>
-                    </li>
-                    <li class="menu-item">
-                        <button class="menu-botao">FAQ</button>
-                        <div class="submenu">
-                            <button>Features</button>
-                            <button>Criação de conta</button>
+                            {% if curr_user %}
+                            <button hx-get="/profile/{{ curr_user.id }}"
+                                    hx-target="main"
+                                    hx-push-url="true">
+                                Meu perfil
+                            </button>
+                            {% endif %}
+
+                            <button class="menu-botao" 
+                                    hx-get="/usuarios" 
+                                    hx-target="main" 
+                                    hx-push-url="true">
+                                Lista de usuarios
+                        </button>
                         </div>
                     </li>
 
-                    {% if username %}
+                    {% if curr_user %}
 
-                    <li class="menu-item">
-                        <button class="menu-botao">Meu Perfil</button>
-                    </li>
                     <li class="menu-item">
                         <button type="button" class="menu-botao" onclick="logout()">Logout</button>
                     </li>
 
+                    {% else %}
+
+                    <li class="menu-item">
+                        <button class="menu-botao">Entrar em sua conta!</button>
+                        <div class="submenu">
+                            <button hx-get="/login"
+                                    hx-target="main"
+                                    hx-push-url="true">
+                                Login
+                            </button>
+                            <button hx-get="/register"
+                                    hx-target="main"
+                                    hx-push-url="true">
+                                Cadastrar-se
+                            </button>
+                        </div>
+                    </li>
+                    
                     {% endif %}
                 </ul>
             </div>
         </div>
 
         <div class="secao-direita">
-
-            {% block conteudo %}{% endblock %}
-            
+            <main hx-get="{{ pagina }}"
+                  hx-target="main"
+                  hx-trigger="load"
+                  hx-push-url="true">
+            </main> 
         </div>
+        
     </div>
-    <div class="rodape">Projeto educacional - Dados do SiBBr</div>
+
+    <div class="rodape">Projeto educacional - Dados por: Brazilian Zoology Group (2023): Catálogo Taxonômico da Fauna do Brasil. v1.2. No organisation. Dataset/Checklist. https://ipt.jbrj.gov.br/jbrj/resource?r=catalogo_taxonomico_da_fauna_do_brasil&amp;v=1.2</div>
+    
     <button class="botao-expandir">☰</button>
 </body>
-</html>

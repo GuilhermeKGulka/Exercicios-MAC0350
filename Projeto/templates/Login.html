@@ -1,7 +1,7 @@
 <div class="auth-container">
-    <h2>Cadastro</h2>
+    <h2>Login</h2>
         
-    <form>
+    <form id="authForm">
         <div class="input-group">
             <label for="usuario">Usuário:</label>
             <input type="text" id="usuario" name="usuario" required>
@@ -11,19 +11,15 @@
             <label for="senha">Senha:</label>
             <input type="password" id="senha" name="senha" required>
         </div>
-
-        <div class="input-group">
-            <label for="check-senha">Insira novamente sua senha:</label>
-            <input type="password" id="check-senha" name="check-senha" required>
-        </div>
             
-        <button type="button" class="btn-auth" onclick="cadastrar_se()">Cadastrar-se</button>
+        <button type="button" class="btn-auth" onclick="login()">Entrar</button>
+
     </form>
 
-    <button id="redirect" hx-get="/login" 
+    <button id="redirect" hx-get="/register" 
                           hx-target="main" 
                           hx-push-url="true">
-        Já tenho uma conta
+        Criar uma conta
     </button>
 </div>
 
@@ -103,27 +99,13 @@
 </style>
 
 <script>
-    async function cadastrar_se() {
-        const senha = document.getElementById('senha').value;
-        const checkSenha = document.getElementById('check-senha').value;
-
-        if (senha === "") {
-            alert("A senha não pode ser vazia!");
-            return;
-        }
-
-        if (senha !== checkSenha) {
-            alert("As senhas não coincidem!");
-            return;
-        }
-
-        const dados = { 
+    async function login() {
+        const dados = {
             username: document.getElementById('usuario').value,
-            name: document.getElementById('usuario').value,
-            password: senha
+            password: document.getElementById('senha').value
         };
 
-        const resposta = await fetch('/createuser', {
+        const resposta = await fetch('/attemptLogin', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

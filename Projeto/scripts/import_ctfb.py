@@ -23,34 +23,12 @@ class ImportadorCTFB:
         logger.info(f"Carregando taxons de: {arquivo_taxon}")
         
         taxons = {}
-        
         with open(arquivo_taxon, 'r', encoding='utf-8') as f:
-            # Detectar delimitador
-            primeira_linha = f.readline()
-            f.seek(0)
-            
-            if '\t' in primeira_linha:
-                delimiter = '\t'
-            elif ';' in primeira_linha:
-                delimiter = ';'
-            else:
-                delimiter = ','
-            
-            reader = csv.DictReader(f, delimiter=delimiter)
-            
+            reader = csv.DictReader(f, delimiter='\t')
             for linha in reader:
-                taxon_id = linha.get('id')
-                if not taxon_id:
-                    continue
-                
-                try:
-                    taxon_id = int(taxon_id)
-                except:
-                    continue
-                
+
+                taxon_id = int(linha.get('id'))
                 nome_cientifico = linha.get('scientificName', '').strip()
-                if not nome_cientifico:
-                    continue
                 
                 taxons[taxon_id] = {
                     'id': taxon_id,
@@ -82,40 +60,25 @@ class ImportadorCTFB:
         logger.info(f"Carregando nomes populares de: {arquivo_vernacular}")
         
         nomes_populares = {}
-        
-        try:
-            with open(arquivo_vernacular, 'r', encoding='utf-8') as f:
-                primeira_linha = f.readline()
-                f.seek(0)
+        with open(arquivo_vernacular, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f, delimiter='\t')
+            for linha in reader:
+
+                taxon_id = int(linha.get('id'))
+                nome = linha.get('vernacularName')
+                idioma = linha.get('language')
                 
-                delimiter = '\t' if '\t' in primeira_linha else ','
-                reader = csv.DictReader(f, delimiter=delimiter)
-                
-                for linha in reader:
-                    try:
-                        taxon_id = int(linha['id'])
-                        nome = linha.get('vernacularName', '').strip()
-                        idioma = linha.get('language', '').strip()
-                        
-                        if nome and idioma == 'PORTUGUES':
-                            # Se já existe um nome, podemos manter o primeiro
-                            # ou pegar o mais curto, etc.
-                            if taxon_id not in nomes_populares:
-                                nomes_populares[taxon_id] = nome
-                    except:
-                        continue
-            
-            logger.info(f"Carregados {len(nomes_populares)} nomes populares")
-        
-        except Exception as e:
-            logger.error(f"Erro ao carregar nomes: {e}")
-        
+                # Prioriza português ou entradas sem idioma definido
+                if taxon_id and nome and (idioma == 'Portuguese' or not idioma):
+                    if taxon_id not in nomes_populares:
+                        nomes_populares[taxon_id] = nome
+
         return nomes_populares
     
     def eh_especie(self, taxon: dict) -> bool:
         """Verifica se o táxon é uma espécie"""
         rank = taxon.get('taxonRank', '').upper()
-        ranks_validos = ['ESPECIE', 'SPECIES', 'SUBESPECIE', 'SUBSPECIES']
+        ranks_validos = ['ESPECIE', 'SPECIES']
         return rank in ranks_validos
     
     def importar_animais(self, arquivo_taxon: str, arquivo_vernacular: str):
@@ -185,7 +148,7 @@ class ImportadorCTFB:
                     ordem=taxon_data.get('order', None),
                     familia=taxon_data.get('family', None),
                     genero=taxon_data.get('genus', None),
-                    especie=taxon_data.get('specificEpithet', None),
+                    epitetoEspecifico=taxon_data.get('specificEpithet', None),
                 )
                 
                 batch.append(animal)

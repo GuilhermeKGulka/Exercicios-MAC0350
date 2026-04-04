@@ -1,0 +1,137 @@
+{% if user %}
+    <div class="pagina-perfil">
+        <div class="profile-img-container">
+            <img id="profile-img" src="{{ user.profile_img_url or '../static/default_user_img.jpg' }}">
+            {% if user.profile_img_url %}<p class="fonte"> {{ user.profile_img_url }} </p>{% endif %}
+
+            {% if user.id == curr_user.id %}
+                <form hx-put="/api/atualizarFoto"
+                      hx-push-url="false"
+                      hx-target="#profile-img">
+                      <input type="url" name="change_img_url" placeholder="Atualizar url da foto" required>
+                      <button type="submit">✓</button>
+                </form>
+            {% endif %}
+        </div>
+
+        <div class="user-info">
+            <h2 id="name">{{ user.name }}</h2>
+            {% if user.id == curr_user.id %}
+                <form hx-put="/api/atualizarNome"
+                      hx-push-url="false"
+                      hx-target="#name">
+                      <input type="text" name="change_name" placeholder="Atualizar nome" required>
+                      <button type="submit">✓</button>
+                </form>
+            {% endif %}
+
+            <span>Username: {{ user.username}}<br></span>
+        </div>
+    </div>
+
+    <h2 id="ani-fav-h2"> Animais favoritos de {{ user.name }}</h2>
+    <div class="grid-favoritos"
+         hx-get="/api/usuarios/{{ user.id }}/favoritos" 
+         hx-trigger="load"
+         hx-target="this"
+         hx-push-url="false">
+        <p>Carregando catálogo...</p>
+    </div>
+    
+{% else %}
+    <p>Usuario nao existe :(</p>
+{% endif %}
+
+<style>
+    .pagina-perfil {
+        margin: 0 20px 20px ;
+        gap: 30px;
+        display: flex; 
+        flex-direction: row; 
+        align-items: flex-start; 
+        justify-content: flex-start;
+        border: none;
+        border-bottom: 2px solid var(--cor4-1);
+    }
+    
+    .profile-img-container {
+        max-width: 25vw;
+    }
+
+    img {
+        height: 75%;
+        max-width: 25vw; 
+        object-fit: contain; 
+        border-radius: 8px;
+        margin: 10px 0;
+        display: block;
+    }  
+    
+    .fonte {
+        font-size: 1vw ;
+        color: var(--cor4);
+    }
+
+    .user-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .user-info h2, #ani-fav-h2 {
+        font-style: italic;
+        color: var(--cor3);
+        margin: 5px 0;
+        font-family: var(--font-family2);
+    }
+    
+    #ani-fav-h2 {
+        margin: 0 20px 20px;
+    }
+
+    .user-info span {
+        margin: 0;
+        overflow-wrap: normal;
+        font-size: 100%;
+        font-family: var(--font-family1);
+    }
+
+    form {
+        font-family: var(--font-family1);
+        margin-bottom: 10px;
+    }
+
+    input {
+        width: 75%;
+        font-size: 1.5vw;
+    }
+
+    form button {
+        width: 10%;
+        font-size: 1.5vw;
+        font-family: var(--font-family1);
+    }
+
+    .grid-favoritos {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 20px;
+        margin: 0 20px 40px;
+    }
+
+    @media (max-width: 768px) {
+
+        .pagina-perfil {
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile-img-container {
+            max-width: 60vw;
+        }
+
+        img {
+            max-width: 60vw; 
+        } 
+    }
+</style>

@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const menuItems = document.querySelectorAll('.menu-item');
     const botaoExpandir = document.querySelector('.botao-expandir');
     const container = document.querySelector('.container');
     const secaoEsquerda = document.querySelector('.secao-esquerda');
@@ -101,6 +100,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
 async function logout() {
     const resposta = await fetch('/logout', {
         method: 'POST',
@@ -115,3 +115,10 @@ async function logout() {
         alert("Erro ao realizar logout!");
     }
 }
+
+document.addEventListener('htmx:afterMount', function(evt) {
+        if (evt.detail.target.id === 'grid-animais') {
+            // Isso força o browser a re-checar a visibilidade dos elementos
+            window.dispatchEvent(new Event('resize'));
+        }
+    });

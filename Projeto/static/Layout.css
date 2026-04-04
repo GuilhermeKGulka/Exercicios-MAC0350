@@ -4,9 +4,15 @@
     --cor2: #ffcc29;
     --cor3: #3e4096;
     --cor4: #303030;
+    --cor4-1: #a0a0a0;
     --cor5: #eeeeee;
+    --cor5-1: #f0f0f0;
+    --cor6: #dd0000;
     --header-height: 100px;
-    --rodape-height: 20px;
+    --rodape-height: 30px;
+    --secao-esquerda-width: 360px;
+    --font-family1: 'Courier New', Courier, monospace;
+    --font-family2: Arial, sas-serif;
 }
 
 body {
@@ -15,17 +21,13 @@ body {
     box-sizing: border-box;
 }
 
-img {
-    object-fit: scale-down;
-}
-
 header {
     position: relative;
     height: var(--header-height);
     margin: 0;
     background: var(--cor1);
     overflow: hidden;
-    font-family: 'Courier New', Courier, monospace;
+    font-family: var(--font-family1);
 }
 
 .logo {
@@ -76,27 +78,61 @@ header {
     background-color: var(--cor4);
 }
 
+.alert-simples {
+    z-index: 50;
+    background-color: var(--cor2); /* Use uma cor do seu projeto */
+    color: white;
+    padding: 15px 25px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    margin: 10px;
+    animation: 0.3s ease-out;
+    font-family: sans-serif;
+    font-weight: bold;
+    position: fixed;
+    bottom: var(--rodape-height);
+}
+
+.hidden {
+    opacity: 0;
+    visibility: hidden;
+    display: none; 
+}
+
 .container {
     display: flex;
     height: calc(100vh - var(--header-height) - var(--rodape-height));
     width: 100%;
-    
     position: relative;
+    overflow-y: hidden;
 }
 
 .secao-esquerda {
-    flex: 1;
-    padding: 30px;
+    padding: 20px;
     overflow-y: auto;
     box-sizing: border-box;
+    width: var(--secao-esquerda-width);
+    flex-shrink: 0;
+    flex-grow: 0;
 }
 
 .secao-direita {
-    flex: 2;
-    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 20px;
     box-sizing: border-box;
-    height: 100%;
     overflow-y: auto;
+    height: 100%;
+    width: 100%;
+}
+
+main {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box
 }
 
 .botao-expandir {
@@ -105,7 +141,7 @@ header {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 50px;
+    height: var(--rodape-height);
     background: var(--cor4);
     color: var(--cor5);
     border: none;
@@ -115,11 +151,11 @@ header {
 
 .menu-lateral {
     position: absolute;
-    background-color: #f5f5f5;
+    background-color: var(--cor5-1);
     border-radius: 8px;
-    padding: 20px;
+    padding: 25px;
     width: 250px;
-    font-family: Arial, sans-serif;
+    font-family: var(--font-family2);
 }
 
 .menu-lateral h3 {
@@ -179,7 +215,7 @@ header {
     border: none;
     color: var(--cor4);
     cursor: pointer;
-    font-size: 13px;
+    font-size: 14px;
     transition: max-height 3s ease-in, opacity 3s ease-in, padding 3s ease-in;
 }
 
@@ -188,75 +224,16 @@ header {
     border-radius: 4px;
 }
 
-.login-container {
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    width: 100%;
-    max-width: 400px;
-    margin: 0 auto;
-}
-
-.login-container h2 {
-    text-align: center;
-    color: var(--cor4);
-    margin-bottom: 30px;
-    font-size: 24px;
-}
-
-.input-group {
-    margin-bottom: 20px;
-}
-
-.input-group label {
-    display: block;
-    margin-bottom: 5px;
-    color: var(--cor4);
-    font-size: 14px;
-}
-
-.input-group input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
-    box-sizing: border-box;
-}
-
-.input-group input:focus {
-    outline: none;
-    border-color: var(--cor1);
-}
-
-.btn-login {
-    width: 100%;
-    padding: 12px;
-    background: var(--cor1);
-    color: var(--cor5);
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-.btn-login:hover {
-    background: var(--cor1-1);
-}
-
 .rodape {
     position: absolute;
     bottom: 0;
     height: var(--rodape-height);
     width: 100vw;
+    font-size: 11px;
     text-align: center;
     color: var(--cor5);
     background-color: var(--cor4);
-    font-family: 'Courier New', Courier, monospace;
+    font-family: var(--font-family1);
 }
 
 @media (max-width: 768px) {
@@ -306,19 +283,19 @@ header {
     
     .menu-botao:active {
         background-color: var(--cor2);
-        color: white;
+        color: var(--cor5-1);
     }
     
     .submenu {
         transition: max-height 0.3s ease, opacity 0.3s ease;
-        background-color: #f9f9f9;
+        background-color: var(--cor5-1);
         border-radius: 4px;
         margin: 5px 0;
     }
     
     .submenu button {
         padding: 12px;
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px solid var(--cor5);
     }
     
     .submenu button:last-child {
@@ -336,31 +313,21 @@ header {
         height: 100%;
         z-index: 10;
         animation: slideUp 0.3s ease-in-out;
-        background: #f0f0f0;
+        background: var(--cor5-1);
     }
     
     .container.expandido .botao-expandir {
         z-index: 30;
     }
 
-    .login-container {
+    .auth-container {
         min-height: auto;
         padding-bottom: 20px;
     }
 
     .rodape {
+        display: none;
         bottom: 50px;
-    }
-}
-
-@keyframes slideUp {
-    from {
-        transform: translateY(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
     }
 }
 
@@ -371,8 +338,18 @@ header {
 }
 
 @media (min-width: 1800px) {
-    .login-container {
+    .auth-container {
         position: absolute;
         left: 1010px;
     }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(100%);opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
 }

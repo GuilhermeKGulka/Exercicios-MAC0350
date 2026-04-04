@@ -1,0 +1,84 @@
+{% for usuario in usuarios %}
+    {% if loop.last %}
+        <div class="grid-item" 
+             hx-get="/api/usuarios?page={{ page + 1 }}&q={{ q }}" 
+             hx-trigger="intersect once" 
+             hx-swap="afterend"
+             hx-target="this"
+             hx-push-url="true"> 
+    {% else %}
+        <div class="grid-item">
+    {% endif %}
+            <div class="img-container"\>
+                <img type="button" 
+                     id="profile-img" 
+                     src="{{ usuario.profile_img_url or '../static/default_user_img.jpg' }}"
+                     hx-get="/profile/{{ usuario.id }}"
+                     hx-target="main"
+                     hx-push-url="true"
+                     hx-swap="innerHTML">
+            </div>
+
+            <div class="grid-info">
+                <h4>{{ usuario.name }}</h4>
+                <p><strong> Username: {{ usuario.username }}</strong></p>
+            </div>
+        </div>
+    
+{% endfor %}
+
+<style>
+    .grid-item {
+        background: var(--cor5); 
+        border-radius: 8px; 
+        overflow: hidden;
+        display: flex; 
+        flex-direction: column;
+        padding: 15px;
+        max-height: 600px;
+        width: 200px; 
+        text-align: center;
+    }
+
+    #profile-img {
+        width: 100%;
+        max-height: 35vh; 
+        object-fit: contain; 
+        border-radius: 8px;
+        margin: 0;
+        display: block;
+    }
+
+    .img-container{
+        cursor: pointer;
+    }
+
+    .grid-info h4 { 
+        margin: 5px;
+        font-size: 16px;
+        font-style: italic;
+        font-family: var(--font-family2);
+    }
+
+    .grid-info p {
+        margin: 0;
+        font-size: 12px;
+        color: #555;
+        font-family: var(--font-family2);
+    }
+    
+    @media (max-width: 768px) {
+        .grid-item { 
+            width: 90px;
+            padding: 10px;
+        }
+        
+        .grid-info h4 {
+            font-size: 12px;
+        }
+
+        .grid-info p {
+            font-size: 10px;
+        }
+    }
+</style>
