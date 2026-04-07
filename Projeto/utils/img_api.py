@@ -7,11 +7,13 @@ from models import Animal
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+#Pega a chave User-Agent para ser usada no header da API da wikimedia
 def get_user_agent():
     with open("env.txt", "r") as f:
         return f.read().split("=")[1]
     
 async def api_img_search(animal: Animal, session: Session) -> Optional[Dict]:
+    #Se ja esta salva no banco, pega o url diretamente sem request
     if animal.img_url:
         return {"img_url": animal.img_url, "img_author": animal.img_author}
 
@@ -19,11 +21,13 @@ async def api_img_search(animal: Animal, session: Session) -> Optional[Dict]:
     especie = f"{animal.genero} {animal.epitetoEspecifico}"
     usage_key = animal.gbif_id
     
+    #Se uma usage key ja esta salva, mas nenhuma imagem, a request ja foi feita anteriormente, e nao encontrou nenhuma imagem, nao tentamos repeti-la
     if usage_key:
         return None
 
     headers = {"User-Agent": get_user_agent()}
 
+    #Tentamos encontrar imagem na wikimedia
     try:
         # 1. Tenta buscar a página pelo nome científico
         wiki_url = "https://en.wikipedia.org/w/api.php"
@@ -51,6 +55,7 @@ async def api_img_search(animal: Animal, session: Session) -> Optional[Dict]:
     except Exception as e:
         print(f"Erro na busca Wikimedia para {especie}: {e}")
 
+    #Se nao foi encontrado na wikimedia tentamos na GBIF (imagens de menor qualidade mas de especies mais raras)
     async with httpx.AsyncClient() as client:
         try:
             match_res = await client.get(f"https://api.gbif.org/v1/species/match?name={quote(especie)}")

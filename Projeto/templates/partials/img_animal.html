@@ -4,25 +4,21 @@
      hx-get="/animal/{{ id }}"
      hx-target="main"
      hx-swap="innerHTML"
-     hx-push-url="true">
+     hx-push-url="true"
+     title="Fonte: {% if img_url %}{{ img_author }}{% else %}vecteezy.com/members/allfridaystudio{% endif %}">
 
 <div class="heart-container" 
      type="button"
      hx-target="this"
      hx-swap="innerHTML"
+     hx-push-url="false"
      hx-put="/api/favoritar/{{ id }}"
      title="Favoritar">
         <div class="heart {{ 'active' if favoritado else '' }}"></div>
 </div>
 
-<p class="creditos">Fonte: {% if img_url %}{{ img_author }}{% else %}vecteezy.com/members/allfridaystudio{% endif %}</p>
-
 <style>
-    .creditos {
-        font-size: 0.5em;
-        color: var(--cor4);
-    }
-
+    
     #img-animal {
         cursor: pointer;
     }

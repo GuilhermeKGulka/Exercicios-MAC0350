@@ -1,14 +1,13 @@
 {% if user %}
     <div class="pagina-perfil">
         <div class="profile-img-container">
-            <img id="profile-img" src="{{ user.profile_img_url or '../static/default_user_img.jpg' }}">
-            {% if user.profile_img_url %}<p class="fonte"> {{ user.profile_img_url }} </p>{% endif %}
+            <img id="profile-img" src="{{ user.profile_img_url or '../static/default_user_img.jpg' }}" title="{{ user.profile_img_url or 'Default image'}}">
 
             {% if user.id == curr_user.id %}
                 <form hx-put="/api/atualizarFoto"
                       hx-push-url="false"
                       hx-target="#profile-img">
-                      <input type="url" name="change_img_url" placeholder="Atualizar url da foto" required>
+                      <input type="text" name="change_img_url" placeholder="Atualizar url da foto">
                       <button type="submit">✓</button>
                 </form>
             {% endif %}
@@ -61,6 +60,7 @@
     img {
         height: 75%;
         max-width: 25vw; 
+        max-height: 300px;
         object-fit: contain; 
         border-radius: 8px;
         margin: 10px 0;
@@ -102,12 +102,12 @@
 
     input {
         width: 75%;
-        font-size: 1.5vw;
+        font-size: 1.5vh;
     }
 
     form button {
         width: 10%;
-        font-size: 1.5vw;
+        font-size: 1.5vh;
         font-family: var(--font-family1);
     }
 
@@ -133,5 +133,9 @@
         img {
             max-width: 60vw; 
         } 
+        
+        .grid-favoritos {
+            grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+        }
     }
 </style>

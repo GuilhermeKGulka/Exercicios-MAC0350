@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.js" integrity="sha384-ezjq8118wdwdRMj+nX4bevEi+cDLTbhLAeFF688VK8tPDGeLUe0WoY2MZtSla72F" crossorigin="anonymous"></script> 
+        <title>Meu Site</title>
+        <style></style>
+    </head>
+    <body>
+        <h1>Meu Site</h1>
+        <p>Bem vindo ao meu site!</p>
+        <button hx-get="/lista"
+                hx-target="main">
+                Lista de alunos
+        </button>
+        <button hx-get="/editarAlunos"
+                hx-target="main">
+                Editar lista de alunos
+        </button>
+        <hr>
+        <main hx-get="/lista"
+              hx-target="main"
+              hx-trigger="load">
+        </main>
+    </body>
+</html>

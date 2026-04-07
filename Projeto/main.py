@@ -12,7 +12,7 @@ from models import Usuario, Animal, Favorito  # ← SQLModel models
 from models import UsuarioAuth
 from utils.img_api import api_img_search
 
-app = FastAPI()
+app = FastAPI(title="Animais do Brasil")
 
 # Criar tabelas ao iniciar
 @app.on_event("startup")
@@ -33,6 +33,7 @@ logger = logging.getLogger("API")
 # ========== FUNCOES ==========
 
 def aplicar_filtros_busca_animais(statement, q: str):
+    '''Usada em /api/animais. realiza a filtragem na requisicao statement, baseada na query string q.'''
     if not q:
         return statement
     
@@ -57,10 +58,10 @@ def aplicar_filtros_busca_animais(statement, q: str):
             )
     return statement
 
-# ========== DEPENDÊNCIAS ==========
+# ========== DEPENDENCIAS ==========
 
 async def get_current_user(request: Request, session: Session = Depends(get_session)) -> Optional[dict]:
-    """Obtém usuário atual do cookie"""
+    '''Obtem dados do usuario atual por meio do username salvo nos cookies (FALHA DE SEGURANCA)'''
     username = request.cookies.get("session_username")
     logger.debug(f"Cookie session_username: {username}")
     
@@ -72,7 +73,7 @@ async def get_current_user(request: Request, session: Session = Depends(get_sess
     return None
 
 async def require_logged_out(request: Request, current_user: Optional[Usuario] = Depends(get_current_user)):
-    """Redireciona se usuário estiver logado"""
+    '''Redireciona se usuario estiver logado'''
     if current_user:
         logger.info(f"Usuário {current_user.username} tentou acessar rota protegida - REDIRECIONANDO")
         raise HTTPException(
@@ -82,7 +83,7 @@ async def require_logged_out(request: Request, current_user: Optional[Usuario] =
     return None
 
 async def require_logged_in(current_user: Optional[Usuario] = Depends(get_current_user)) -> Usuario:
-    """Exige que usuário esteja logado"""
+    '''Exige que usuário esteja logado'''
     if not current_user:
         raise HTTPException(
             status_code=status.HTTP_303_SEE_OTHER,
@@ -94,9 +95,7 @@ async def require_logged_in(current_user: Optional[Usuario] = Depends(get_curren
 
 @app.get("/")
 async def pagina_raiz(request: Request, current_user: Optional[Usuario] = Depends(get_current_user),session: Session = Depends(get_session)):
-    context={
-        "curr_user": current_user if current_user else None,
-    }
+    context={"curr_user": current_user}
 
     if request.headers.get("HX-Request"):
         return templates.TemplateResponse(
@@ -115,18 +114,20 @@ async def pagina_inicial(request: Request, current_user: Optional[Usuario] = Dep
     animais = session.exec(select(Animal)).all()
     animal_do_dia = None
 
+    #Para a definicao do animal do dia, usamos a data como semente aleatoria, e escolhemos animais ate encontrar um que possua imagem, ou passar do limite de tentativas
     if animais:
         hoje = datetime.date.today().strftime("%Y-%m-%d")
         random.seed(hoje)
 
         for _ in range(15):
             candidato = random.choice(animais)
-            if await api_img_search(candidato, session):
+            await api_img_search(candidato, session)
+            if candidato.img_url:
                 animal_do_dia = candidato
                 break
         
     context = {
-        "curr_user": current_user if current_user else None,
+        "curr_user": current_user,
         "animal": animal_do_dia,
     }
     
@@ -141,6 +142,8 @@ async def pagina_inicial(request: Request, current_user: Optional[Usuario] = Dep
         name="Layout.html",
         context={**context, "pagina":"/home"}
     )
+
+#As 2 rotas a seguir nao precisam do contexto curr_user pois exigem que este valha None.
 
 @app.get("/login")
 async def pagina_login(request: Request, _: None = Depends(require_logged_out)):
@@ -167,6 +170,8 @@ async def pagina_cadastro(request: Request, _: None = Depends(require_logged_out
         name="Layout.html",
         context={"pagina":"/register"}
     )
+
+#Apenas as 3 rotas a seguir usam redirect response pois exigem mudanca crucial no context
 
 @app.post("/createuser")
 async def cadastro(registerRequest: UsuarioAuth, session: Session = Depends(get_session)):
@@ -211,7 +216,7 @@ async def login(loginRequest: UsuarioAuth, response: Response = None, session: S
             content={"error": "Senha incorreta"}
         )
     
-    response = RedirectResponse(url="/", status_code=303)
+    response = RedirectResponse(url="/home", status_code=303)
     response.set_cookie(
         key="session_username",
         value=loginRequest.username,
@@ -222,7 +227,7 @@ async def login(loginRequest: UsuarioAuth, response: Response = None, session: S
 
 @app.post("/logout")
 async def logout(response: Response):
-    response = RedirectResponse(url="/", status_code=303)
+    response = RedirectResponse(url="/home", status_code=303)
     response.delete_cookie("session_username", path="/")
     return response
 
@@ -247,6 +252,7 @@ async def pagina_animais(request: Request, current_user: Optional[Usuario] = Dep
 
 @app.get("/animal/{id}")
 async def pagina_animal(request: Request, id: int, current_user: Optional[Usuario] = Depends(get_current_user), session: Session = Depends(get_session)):
+    #Definido para permitir a busca por animais de forma aleatoria e simples
     if id == 0:
         id = session.exec(select(Animal.id).order_by(func.random()).limit(1)).first()
     
@@ -356,6 +362,22 @@ def atualizar_aluno(change_img_url: Optional[str] = Form(...), curr_user: Option
 @app.put("/api/favoritar/{id}")
 async def favoritar_animal(id: int, session: Session = Depends(get_session), curr_user: Usuario = Depends(get_current_user)):
     # Busca se existe o favorito
+    
+    if not curr_user:
+        return HTMLResponse(content=f'''
+        <div class="heart"></div>
+
+        <div id="alerta-temp" hx-swap-oob="true" class="alert-simples">
+            Realize login para poder favoritar!
+            <script>
+                setTimeout(() => {{
+                    const alerta = document.getElementById("alerta-temp");
+                    if (alerta) alerta.classList.add("hidden");
+                }}, 3000);
+            </script>
+        </div>
+    ''')
+    
     statement = select(Favorito).where(
         Favorito.usuario_id == curr_user.id, 
         Favorito.animal_id == id
@@ -393,6 +415,8 @@ async def favoritar_animal(id: int, session: Session = Depends(get_session), cur
             </script>
         </div>
     ''')
+
+#Rota auxiliar para paginacao e scroll infinito
 
 @app.get("/api/animais")
 async def api_animais_scroll(request: Request, page: int = 1, q: str = "", session: Session = Depends(get_session)):
@@ -474,6 +498,8 @@ async def api_sugestoes(request: Request, q: str = "", session: Session = Depend
         )
     return RedirectResponse(url="/animais", status_code=303)
 
+#Rota auxiliar para paginacao e scroll infinito
+
 @app.get("/api/usuarios")
 async def api_usuarios_scroll(request: Request, page: int = 1, q: str = "", session: Session = Depends(get_session)):
     limit = 20
@@ -490,6 +516,8 @@ async def api_usuarios_scroll(request: Request, page: int = 1, q: str = "", sess
             context={"usuarios": usuarios, "page": page, "q": q}
         )
     return RedirectResponse(url="/usuarios", status_code=303)
+
+#Rota auxiliar para paginacao e scroll infinito
 
 @app.get("/api/usuarios/{id}/favoritos")
 async def api_usuarios_scroll(id: int, request: Request, page: int = 1, session: Session = Depends(get_session)):

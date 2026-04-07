@@ -101,7 +101,7 @@ class ImportadorCTFB:
             ignorados_duplicados = 0
             ja_existentes = 0
             batch = []
-            BATCH_SIZE = 1000
+            BATCH_SIZE = 20000
             
             # Primeiro, vamos coletar TODOS os nomes já existentes no banco
             nomes_existentes = set()

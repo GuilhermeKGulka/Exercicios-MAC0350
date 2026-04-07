@@ -12,6 +12,7 @@
             <div class="img-container"
                  hx-get="/api/animal/{{ animal.id }}/img"
                  hx-target="this"
+                 hx-swap="innerHTML"
                  hx-push-url="false"
                  hx-trigger="load">
             </div>
